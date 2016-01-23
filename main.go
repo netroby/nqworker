@@ -1,10 +1,14 @@
 package main
 
 import (
-	"fmt"
 	"flag"
+	"fmt"
 	"github.com/nats-io/nats"
+	"io/ioutil"
+	"net/http"
 	"runtime"
+	"strings"
+	"time"
 )
 
 func main() {
@@ -22,7 +26,21 @@ func main() {
 	}
 	nc.Publish("nqjobs", []byte("http://www.netroby.com"))
 	nc.Subscribe("nqjobs", func(m *nats.Msg) {
+		fmt.Println("Time now: ", time.Now().Format("15:04:05.000"))
+		url := string(m.Data)
 		fmt.Println(string(m.Data))
+		if strings.HasPrefix(url, "http") {
+			resp, err := http.Get(url)
+			if err != nil {
+				fmt.Println(err)
+			}
+			defer resp.Body.Close()
+			body, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				fmt.Println(err)
+			}
+			fmt.Println(string(body))
+		}
 	})
 	runtime.Goexit()
 }
