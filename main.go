@@ -24,7 +24,7 @@ func main() {
 	} else {
 		fmt.Println("Success connected to nats server")
 	}
-	nc.Publish("nqjobs", []byte("http://www.netroby.com"))
+//	nc.Publish("nqjobs", []byte("http://www.netroby.com")) //To create a nqjobs
 	nc.Subscribe("nqjobs", func(m *nats.Msg) {
 		fmt.Println("Time now: ", time.Now().Format("15:04:05.000"))
 		url := string(m.Data)
