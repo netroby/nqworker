@@ -23,5 +23,5 @@ _testmain.go
 *.exe
 *.test
 *.prof
-
+nqworker
 # Created by .ignore support plugin (hsz.mobi)

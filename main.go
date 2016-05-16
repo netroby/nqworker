@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"runtime"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -24,8 +25,10 @@ func main() {
 	} else {
 		fmt.Println("Success connected to nats server")
 	}
-//	nc.Publish("nqjobs", []byte("http://www.netroby.com")) //To create a nqjobs
+	var mutex = &sync.Mutex{}
+	//	nc.Publish("nqjobs", []byte("http://www.netroby.com")) //To create a nqjobs
 	nc.Subscribe("nqjobs", func(m *nats.Msg) {
+		mutex.Lock()
 		fmt.Println("Time now: ", time.Now().Format("15:04:05.000"))
 		url := string(m.Data)
 		fmt.Println(string(m.Data))
@@ -41,6 +44,8 @@ func main() {
 			}
 			fmt.Println(string(body))
 		}
+		mutex.Unlock()
+		runtime.Gosched()
 	})
 	runtime.Goexit()
 }
