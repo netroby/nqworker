@@ -44,7 +44,7 @@ func main() {
 			}
 			fmt.Println(string(body))
 		}
-		mutex.Unlock()
+		defer mutex.Unlock()
 		runtime.Gosched()
 	})
 	runtime.Goexit()
